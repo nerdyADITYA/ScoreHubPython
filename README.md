@@ -12,7 +12,6 @@
 * [How It Works](#how-it-works)
 * [API Routes](#api-routes)
 * [Planned Improvements](#planned-improvements)
-* [License](#license)
 
 ---
 
