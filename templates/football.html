@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Score Tracker</title>
+    <!-- Bootstrap CSS for styling and responsive design -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styling for team sections */
+        .team-section {
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        /* Style for the score display to make it prominent */
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        /* Make player lists scrollable if there are many players */
+        .player-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Main heading for the page -->
+        <h1 class="text-center mb-4">Football Score Tracker</h1>
+        
+        <div class="row">
+            <!-- Team 1 Section -->
+            <div class="col-md-6">
+                <div class="team-section">
+                    <h2>Team 1</h2>
+                    <!-- Form to add new players to Team 1 -->
+                    <form action="/football/add_player" method="POST">
+                        <!-- Hidden field to identify which team the player belongs to -->
+                        <input type="hidden" name="team" value="1">
+                        <!-- Input field for player name -->
+                        <input type="text" name="player_name" class="form-control mb-2" placeholder="Enter Player Name">
+                        <button type="submit" class="btn btn-primary">Add Player</button>
+                    </form>
+                    
+                    <!-- Container for Team 1 player list -->
+                    <div class="player-list mb-3" id="team1-players">
+                        <!-- Loop through each player in Team 1 -->
+                        {% for player in team1.players %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- Display player name -->
+                                    <span>{{ player.name }}</span>
+                                    <div>
+                                        <!-- Display player stats using badges -->
+                                        <span class="badge bg-primary me-2">Goals: {{ player.goals }}</span>
+                                        <span class="badge bg-warning me-2">Penalties: {{ player.penalties }}</span>
+                                        
+                                        <!-- Form to record a goal for this player -->
+                                        <form action="/football/update_score" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="1">
+                                            <!-- loop.index0 gives the zero-based index of the current player -->
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <input type="hidden" name="action" value="goal">
+                                            <button type="submit" class="btn btn-success btn-sm">Goal</button>
+                                        </form>
+                                        
+                                        <!-- Form to record a penalty for this player -->
+                                        <form action="/football/update_score" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="1">
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <input type="hidden" name="action" value="penalty">
+                                            <button type="submit" class="btn btn-warning btn-sm">Penalty</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Team 2 Section (Structure identical to Team 1 section) -->
+            <div class="col-md-6">
+                <div class="team-section">
+                    <h2>Team 2</h2>
+                    <!-- Form to add new players to Team 2 -->
+                    <form action="/football/add_player" method="POST">
+                        <input type="hidden" name="team" value="2">
+                        <input type="text" name="player_name" class="form-control mb-2" placeholder="Enter Player Name">
+                        <button type="submit" class="btn btn-primary">Add Player</button>
+                    </form>
+                    
+                    <!-- Container for Team 2 player list -->
+                    <div class="player-list mb-3" id="team2-players">
+                        {% for player in team2.players %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{ player.name }}</span>
+                                    <div>
+                                        <span class="badge bg-primary me-2">Goals: {{ player.goals }}</span>
+                                        <span class="badge bg-warning me-2">Penalties: {{ player.penalties }}</span>
+                                        
+                                        <!-- Forms for Team 2 players -->
+                                        <form action="/football/update_score" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="2">
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <input type="hidden" name="action" value="goal">
+                                            <button type="submit" class="btn btn-success btn-sm">Goal</button>
+                                        </form>
+                                        <form action="/football/update_score" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="2">
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <input type="hidden" name="action" value="penalty">
+                                            <button type="submit" class="btn btn-warning btn-sm">Penalty</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Score Display Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Current Score</h3>
+                        <!-- Large, prominent score display -->
+                        <div class="score-display">
+                            <span id="team1-score">{{ team1.score }}</span>
+                            -
+                            <span id="team2-score">{{ team2.score }}</span>
+                        </div>
+                        <!-- Team names display -->
+                        <div class="mt-2">
+                            <span id="team1-display">{{ team1.name }}</span>
+                            vs
+                            <span id="team2-display">{{ team2.name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Match Button Section -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <!-- Form to end the current match -->
+                <form action="/football/end_match" method="POST">
+                    <button type="submit" class="btn btn-danger btn-lg">End Match</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Match Result Display Section - Only appears when match has ended -->
+        {% if match_ended %}
+<div class="row mt-4" id="match-result">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3>Match Result</h3>
+                <!-- Display the match result (winner or draw) -->
+                <p id="result-text">{{ result }}</p>
+                <!-- Display final stats for both teams -->
+                <p>{{ team1.name }}: {{ team1.score }} goals, {{ team1.stats.penalties }} penalties</p>
+                <p>{{ team2.name }}: {{ team2.score }} goals, {{ team2.stats.penalties }} penalties</p>
+                <!-- Display the top scorer from the winning team -->
+                <p>{{ top_scorer }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+    </div>
+
+    <!-- Include Bootstrap JS for any interactive components -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

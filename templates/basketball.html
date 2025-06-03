@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Sets the viewport for responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Score Tracker</title>
+    <!-- Importing Bootstrap CSS framework for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for team sections - adds borders and spacing */
+        .team-section {
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        /* Makes the score display large and bold for visibility */
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        /* Creates a scrollable area for player lists that exceeds 300px height */
+        .player-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main container with top margin -->
+    <div class="container mt-4">
+        <!-- Page heading -->
+        <h1 class="text-center mb-4">Basketball Score Tracker</h1>
+        
+        <!-- Row containing both team sections -->
+        <div class="row">
+            <!-- Team 1 Section - Takes up half the width on medium+ screens -->
+            <div class="col-md-6">
+                <div class="team-section">
+                    <h2>Team 1</h2>
+                    <!-- Form to add a new player to Team 1 -->
+                    <form action="/basketball/add_player" method="POST">
+                        <!-- Hidden input storing team identifier -->
+                        <input type="hidden" name="team" value="1">
+                        <!-- Text input for player's name -->
+                        <input type="text" name="player_name" class="form-control mb-2" placeholder="Enter Player Name">
+                        <!-- Submit button to add the player -->
+                        <button type="submit" class="btn btn-primary">Add Player</button>
+                    </form>
+                    
+                    <!-- Container for displaying Team 1 players -->
+                    <div class="player-list mb-3" id="team1-players">
+                        <!-- Loop through each player in team1.players array -->
+                        {% for player in team1.players %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <!-- Flex container for player name and scoring controls -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- Display player name -->
+                                    <span>{{ player.name }}</span>
+                                    <div>
+                                        <!-- Display player statistics with different colored badges -->
+                                        <span class="badge bg-primary me-2">Points: {{ player.points }}</span>
+                                        <span class="badge bg-success me-2">2P: {{ player.twoPointers }}</span>
+                                        <span class="badge bg-warning me-2">3P: {{ player.threePointers }}</span>
+                                        <span class="badge bg-info me-2">FT: {{ player.freeThrows }}</span>
+                                        
+                                        <!-- Form for adding 2-point shot -->
+                                        <form action="/basketball/add_points" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="1">
+                                            <!-- Store player's index in the array for server identification -->
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <!-- Points value to add (2 points) -->
+                                            <input type="hidden" name="points" value="2">
+                                            <button type="submit" class="btn btn-success btn-sm">2P</button>
+                                        </form>
+                                        
+                                        <!-- Form for adding 3-point shot -->
+                                        <form action="/basketball/add_points" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="1">
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <!-- Points value to add (3 points) -->
+                                            <input type="hidden" name="points" value="3">
+                                            <button type="submit" class="btn btn-warning btn-sm">3P</button>
+                                        </form>
+                                        
+                                        <!-- Form for adding free throw (1 point) -->
+                                        <form action="/basketball/add_points" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="1">
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <!-- Points value to add (1 point) -->
+                                            <input type="hidden" name="points" value="1">
+                                            <button type="submit" class="btn btn-info btn-sm">FT</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Team 2 Section - Takes up half the width on medium+ screens -->
+            <div class="col-md-6">
+                <div class="team-section">
+                    <h2>Team 2</h2>
+                    <!-- Form to add a new player to Team 2 -->
+                    <form action="/basketball/add_player" method="POST">
+                        <!-- Hidden input storing team identifier -->
+                        <input type="hidden" name="team" value="2">
+                        <!-- Text input for player's name -->
+                        <input type="text" name="player_name" class="form-control mb-2" placeholder="Enter Player Name">
+                        <!-- Submit button to add the player -->
+                        <button type="submit" class="btn btn-primary">Add Player</button>
+                    </form>
+                    
+                    <!-- Container for displaying Team 2 players -->
+                    <div class="player-list mb-3" id="team2-players">
+                        <!-- Loop through each player in team2.players array -->
+                        {% for player in team2.players %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <!-- Flex container for player name and scoring controls -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- Display player name -->
+                                    <span>{{ player.name }}</span>
+                                    <div>
+                                        <!-- Display player statistics with different colored badges -->
+                                        <span class="badge bg-primary me-2">Points: {{ player.points }}</span>
+                                        <span class="badge bg-success me-2">2P: {{ player.twoPointers }}</span>
+                                        <span class="badge bg-warning me-2">3P: {{ player.threePointers }}</span>
+                                        <span class="badge bg-info me-2">FT: {{ player.freeThrows }}</span>
+                                        
+                                        <!-- Form for adding 2-point shot -->
+                                        <form action="/basketball/add_points" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="2">
+                                            <!-- Store player's index in the array for server identification -->
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <!-- Points value to add (2 points) -->
+                                            <input type="hidden" name="points" value="2">
+                                            <button type="submit" class="btn btn-success btn-sm">2P</button>
+                                        </form>
+                                        
+                                        <!-- Form for adding 3-point shot -->
+                                        <form action="/basketball/add_points" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="2">
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <!-- Points value to add (3 points) -->
+                                            <input type="hidden" name="points" value="3">
+                                            <button type="submit" class="btn btn-warning btn-sm">3P</button>
+                                        </form>
+                                        
+                                        <!-- Form for adding free throw (1 point) -->
+                                        <form action="/basketball/add_points" method="POST" style="display: inline;">
+                                            <input type="hidden" name="team" value="2">
+                                            <input type="hidden" name="player_index" value="{{ loop.index0 }}">
+                                            <!-- Points value to add (1 point) -->
+                                            <input type="hidden" name="points" value="1">
+                                            <button type="submit" class="btn btn-info btn-sm">FT</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Score Display Section - Shows current game score -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Current Score</h3>
+                        <!-- Large display of current score -->
+                        <div class="score-display">
+                            <!-- Team 1 score, dynamically updated from server data -->
+                            <span id="team1-score">{{ team1.score }}</span>
+                            -
+                            <!-- Team 2 score, dynamically updated from server data -->
+                            <span id="team2-score">{{ team2.score }}</span>
+                        </div>
+                        <!-- Display team names -->
+                        <div class="mt-2">
+                            <span id="team1-display">{{ team1.name }}</span>
+                            vs
+                            <span id="team2-display">{{ team2.name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Game Section - Button to finalize the game -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <!-- Form to end the current game -->
+                <form action="/basketball/end_game" method="POST">
+                    <button type="submit" class="btn btn-danger btn-lg">End Game</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Game Result Section - Only displayed when match is ended -->
+        {% if match_ended %}
+<div class="row mt-4" id="game-result">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3>Game Result</h3>
+                <!-- Display the game result message (win/lose/draw) -->
+                <p id="result-text">{{ result }}</p>
+                <!-- Display final scores for both teams -->
+                <p>{{ team1.name }}: {{ team1.score }} points</p>
+                <p>{{ team2.name }}: {{ team2.score }} points</p>
+                <!-- Display the top scorer from the winning team -->
+                <p>{{ top_scorer }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+    </div>
+
+    <!-- Import Bootstrap JavaScript bundle for interactive components -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
